@@ -59,7 +59,7 @@ void IGA_1D::Derivative_1(double EV[], double K[], int p, double t)
 //----------------------------------------------------------------------------//
 void IGA_1D::Derivative_2(double EV[], double K[], int p, double t)
 {
-  double C[p],D[p+1],E[p+1];
+  double C[p],D[p+1],E[p-1];
   ZeroVector(C,p);
   ZeroVector(E,p+1);
   for (int i = 0; i < p+1; i++){
@@ -88,8 +88,8 @@ void IGA_1D::Derivative_2(double EV[], double K[], int p, double t)
       for (int i = 2; i < p-2; i++)
         EV[i] = C[i]*D[i]*E[i-2];
     }
-    EV[p-1] = C[p-2]*D[p-2]*E[p-1]-(C[p-2]+C[p-1])*D[p-1]*E[p];
-    EV[p] = -C[p-2]*D[p-1]*E[p];
+    EV[p-1] = C[p-2]*D[p-2]*E[p-3]-(C[p-2]+C[p-1])*D[p-1]*E[p-2];
+    EV[p] = C[p-2]*D[p-1]*E[p-2];
   }
   double s = static_cast<double>(p*(p-1));
   for (int i = 0; i < p+1; i++)
