@@ -13,8 +13,8 @@ void KuramotoSivashinsky::InitializeClass(char* XMLFILE)
 {
   Extract_XML(XMLFILE);
   Control_XML();
-  GenerateKnotVector(StartPoint,EndPoint,elements,polynomial,continuity);
-  GenerateContinuityVector(KnotVector,elements,polynomial,continuity);
+  KnotVector = GenerateKnotVector(StartPoint,EndPoint,elements,polynomial,continuity);
+  ContinuityVector = GenerateContinuityVector(KnotVector,elements,polynomial,continuity);
 }
 
 
@@ -23,7 +23,74 @@ void KuramotoSivashinsky::InitializeClass(char* XMLFILE)
 //----------------------------------------------------------------------------//
 void KuramotoSivashinsky::Extract_XML(char* XMLFILE)
 {
+  // Opening the XML-file.
+  TiXmlDocument doc(XMLFILE);
+  doc.LoadFile();
 
+  // Extracting all data from the XML-file.
+  TiXmlElement* EL = doc.RootElement()->FirstChildElement();
+  while (EL){
+    // Looping through the KnotVector-tag.
+    TiXmlElement* EL1 = EL->FirstChildElement();
+    while (EL1){
+      if (std::string(EL1->Value()) == "StartPoint")
+        StartPoint = atof(EL1->FirstChild()->Value());
+      if (std::string(EL1->Value()) == "EndPoint")
+        EndPoint = atof(EL1->FirstChild()->Value());
+      if (std::string(EL1->Value()) == "polynomial")
+        polynomial = atoi(EL1->FirstChild()->Value());
+      if (std::string(EL1->Value()) == "elements")
+        elements = atoi(EL1->FirstChild()->Value());
+      EL1 = EL1->NextSiblingElement();
+    }
+
+    // Looping through the PDE-tag.
+    TiXmlElement* EL2 = EL->FirstChildElement();
+    while (EL2){
+      if (std::string(EL2->Value()) == "EquationType")
+        EquationType = EL2->FirstChild()->Value();
+      if (std::string(EL2->Value()) == "alpha")
+        alpha = atof(EL2->FirstChild()->Value());
+      if (std::string(EL2->Value()) == "beta")
+        beta = atof(EL2->FirstChild()->Value());
+      if (std::string(EL2->Value()) == "gamma")
+        gamma = atof(EL2->FirstChild()->Value());
+      if (std::string(EL2->Value()) == "BoundaryCondition")
+        BoundaryCondition = EL2->FirstChild()->Value();
+      EL2 = EL2->NextSiblingElement();
+    }
+
+    // Looping through the TimeIntegrator-tag.
+    TiXmlElement* EL3 = EL->FirstChildElement();
+    while (EL3){
+      if (std::string(EL3->Value()) == "Time")
+        Time = atof(EL3->FirstChild()->Value());
+      if (std::string(EL3->Value()) == "Order")
+        Order = atoi(EL3->FirstChild()->Value());
+      if (std::string(EL3->Value()) == "TimeSteps")
+        TimeSteps = atoi(EL3->FirstChild()->Value());
+      EL3 = EL3->NextSiblingElement();
+    }
+
+    // Looping through the PostProcessing-tag.
+    TiXmlElement* EL4 = EL->FirstChildElement();
+    while (EL4){
+      if (std::string(EL4->Value()) == "Error"){
+        int temp = atoi(EL4->FirstChild()->Value());
+        Error = static_cast<bool>(temp);
+      }
+      if (std::string(EL4->Value()) == "Visualize"){
+        int temp = atoi(EL4->FirstChild()->Value());
+        Visualize = static_cast<bool>(temp);
+      }
+      if (std::string(EL4->Value()) == "nviz")
+        nviz = atoi(EL4->FirstChild()->Value());
+      EL4 = EL4->NextSiblingElement();
+    }
+
+    // Stopping the while-loop.
+    EL = EL->NextSiblingElement();
+  }
 }
 
 

@@ -36,9 +36,9 @@ int* IGA_1D::GenerateContinuityVector(double* K, int n, int p, int c)
   int r = p-c;
   int it = 0;
   int d = 0;
-  for (int i = 1; i <= r*(n-1); i++){
+  for (int i = 1; i <= n+(r-1)*(n-1); i++){
     double K0[2*p+2];
-    for (int j = i; j < i+2*p+2; j++)
+    for (int j = i; j < i+2*p+1; j++)
       K0[j-i] = K[j];
     if (K0[p] == K0[p+1])
       d++;

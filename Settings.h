@@ -3,9 +3,11 @@
 #include <cmath>
 
 #include <cstring>
+#include <cctype>
 #include <string>
 using std::string;
 
+#include "tinyxml.h"
 
 using namespace std;
 

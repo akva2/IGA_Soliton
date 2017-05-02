@@ -9,5 +9,10 @@ int main(int argc, char* argv[])
   cout.setf(ios::showpoint);
   cout.precision(15);
 
+  char* XMLFILE = argv[1];
+  
+  KuramotoSivashinsky KS;
+  KS.InitializeClass(XMLFILE);
+
   return 0;
 }

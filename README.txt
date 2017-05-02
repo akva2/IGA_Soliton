@@ -16,7 +16,7 @@ To compile and run the source code, the following packages are required:
     - MPI 1.10
     - OpenMP 4.5
     - PETSc 3.7
-    - TinyXML
+    - TinyXML 2.6.2
     - Expreval
   * Python programming language (for plotting graphs)
     - NumPy
@@ -30,6 +30,8 @@ The easiest way of including NumPy and Matplotlib is to install the Anaconda
 launcher, a complete program containing all the relevant Python-libraries for
 scientific computation.
 
+https://sourceforge.net/projects/tinyxml/
+https://sourceforge.net/projects/expreval/
 
 --------------------------------------------------------------------------------
 | Compiling and running procedure                                              |
