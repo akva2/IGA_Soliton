@@ -14,7 +14,7 @@ void IGA_1D::LinAss024(int TYPE, int p, double K[], int s, double g[][2], double
     for (int j = 0; j <= p; j++)
       m[i][j] = 0.0;
   }
-  for (int k = 0; k <= s; k++){
+  for (int k = 0; k < s; k++){
     double E[p+1];
     if (TYPE == 0)
       Evaluate(E,K,p,g[k][0]);
@@ -22,12 +22,12 @@ void IGA_1D::LinAss024(int TYPE, int p, double K[], int s, double g[][2], double
       Derivative_1(E,K,p,g[k][0]);
     else if (TYPE == 4)
       Derivative_2(E,K,p,g[k][0]);
-    double g0 = g[k][1];
+    double w = g[k][1];
     for (int i = 0; i <= p; i++)
-      m[i][i] += g0*pow(E[i],2);
+      m[i][i] += w*pow(E[i],2);
     for (int i = 0; i <= p-1; i++){
       for (int j = 1; j <= p; j++){
-        double d = g0*E[i]*E[j];
+        double d = w*E[i]*E[j];
         m[i][j] += d;
         m[j][i] += d;
       }
@@ -46,7 +46,7 @@ void IGA_1D::LinAss13(int TYPE, int p, double K[], int s, double g[][2], double*
     for (int j = 0; j <= p; j++)
       m[i][j] = 0.0;
   }
-  for (int k = 0; k <= s; k++){
+  for (int k = 0; k < s; k++){
     double E1[p+1],E2[p+1];
     if (TYPE == 1){
       Evaluate(E1,K,p,g[k][0]);
@@ -56,10 +56,10 @@ void IGA_1D::LinAss13(int TYPE, int p, double K[], int s, double g[][2], double*
       Derivative_1(E1,K,p,g[k][0]);
       Derivative_2(E2,K,p,g[k][0]);
     }
-    double g0 = g[k][1];
+    double w = g[k][1];
     for (int i = 0; i <= p; i++){
       for (int j = 0; j <= p; j++){
-        m[i][j] = g0*E1[i]*E2[j];
+        m[i][j] = w*E1[i]*E2[j];
       }
     }
   }

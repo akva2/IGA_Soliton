@@ -18,7 +18,7 @@ public:
   double Olver(int n, double x);
   double Legendre_0(int n, double x);
   double Legendre_1(int n, double x);
-  void QuadratureTransform(double g[][2], double** G, int n, double a, double b);
+  void QuadratureTransform(double g[][2], double** G, int s, double a, double b);
 
   // Functions for the linear assembly.
   void LinAss024(int TYPE, int p, double K[], int s, double g[][2], double** m);

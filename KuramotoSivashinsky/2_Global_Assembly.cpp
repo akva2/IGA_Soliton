@@ -107,3 +107,47 @@ void KuramotoSivashinsky::InitAss(int p, double K[], int s, double g[][2], doubl
     }
   }
 }
+
+
+//----------------------------------------------------------------------------//
+// Creating the element contribution for the Hilbert transform of the third   //
+// order convection matrix.                                                   //
+//----------------------------------------------------------------------------//
+void KuramotoSivashinsky::Hilbert3(int p, double K[], int si, double gi[][2],
+  int so, double go[][2], double** m)
+{
+  for (int i = 0; i <= p; i++){
+    for (int j = 0; j <= p; j++)
+      m[i][j] = 0.0;
+  }
+  double R[p+1][si];
+  for (int i = 0; i < si; i++){
+    double EI[p+1];
+    Derivative_2(EI,K,p,gi[i][0]);
+    for (int j = 0; j <= p; j++){
+      R[j][i] = EI[j];
+    }
+  }
+  for (int k = 0; k < so; k++){
+    double EO[p+1],I[p+1];
+    Derivative_1(EO,K,p,go[k][0]);
+    ZeroVector(I,p+1);
+    double no = go[k][0];
+    double wo = go[k][1];
+    for (int l = 0; l < si; l++){
+      double ni = gi[l][0];
+      double wi = gi[l][1];
+      for (int i = 0; i <= p; i++){
+        I[i] += (wi*R[i][l])/(ni-no);
+      }
+    }
+    for (int i = 0; i <= p; i++){
+      for (int j = 0; j <= p; j++)
+        m[i][j] += wo*EO[i]*I[j];
+    }
+  }
+  for (int i = 0; i <= p; i++){
+    for (int j = 0; j <= p; j++)
+      m[i][j] /= pi;
+  }
+}

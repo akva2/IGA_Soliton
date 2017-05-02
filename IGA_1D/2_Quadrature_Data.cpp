@@ -92,9 +92,9 @@ double IGA_1D::Legendre_1(int n, double x)
 //----------------------------------------------------------------------------//
 // Transforming quadrature data from reference element to physical element.   //
 //----------------------------------------------------------------------------//
-void IGA_1D::QuadratureTransform(double g[][2], double** G, int n, double a, double b)
+void IGA_1D::QuadratureTransform(double g[][2], double** G, int s, double a, double b)
 {
-  for (int i = 0; i < n; i++){
+  for (int i = 0; i < s; i++){
     g[i][0] = a*G[i][0]+b;
     g[i][1] = a*G[i][1];
   }

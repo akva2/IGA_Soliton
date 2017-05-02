@@ -13,6 +13,7 @@ public:
   void IsogeometricDiscretization();
   void Assembly(string Type, int p, int nx, double* KX, int* CX);
   void InitAss(int p, double K[], int s, double g[][2], double f[]);
+  void Hilbert3(int p, double K[], int si, double gi[][2],int so, double go[][2], double** m);
 
 private:
   string EquationType;

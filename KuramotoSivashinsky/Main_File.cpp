@@ -10,9 +10,10 @@ int main(int argc, char* argv[])
   cout.precision(15);
 
   char* XMLFILE = argv[1];
-  
+
   KuramotoSivashinsky KS;
   KS.InitializeClass(XMLFILE);
+  KS.IsogeometricDiscretization();
 
   return 0;
 }
