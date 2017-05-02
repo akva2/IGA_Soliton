@@ -1,5 +1,55 @@
 // Codes for generating knot vector, continuity vector and manipulating splines.
 #include "../Settings.h"
+#include "IGA_1D.h"
+
+
+//----------------------------------------------------------------------------//
+// Script for creating the knot vector.                                       //
+//----------------------------------------------------------------------------//
+double* IGA_1D::GenerateKnotVector(double a, double b, int n, int p, int c)
+{
+  double h = static_cast<double>((b-a)/n);
+  int r = p-c;
+  int L = 2*(p+1)+r*(n-1);
+  double* K = new double[L];
+  for (int i = 0; i <= p; i++){
+    K[i] = a;
+    K[L-1-i] = b;
+  }
+  for (int i = 1; i <= n-1; i++){
+    double k = a+i*h;
+    for (int j = p+(i-1)*r+1; j <= p+i*r; j++)
+      K[j] = k;
+  }
+  return K;
+}
+
+
+//----------------------------------------------------------------------------//
+// Script for creating the knot vector.                                       //
+//----------------------------------------------------------------------------//
+int* IGA_1D::GenerateContinuityVector(double* K, int n, int p, int c)
+{
+  int* C = new int[n];
+  for (int i = 0; i < n; i++)
+    C[i] = 0;
+  int r = p-c;
+  int it = 0;
+  int d = 0;
+  for (int i = 1; i <= r*(n-1); i++){
+    double K0[2*p+2];
+    for (int j = i; j < i+2*p+2; j++)
+      K0[j-i] = K[j];
+    if (K0[p] == K0[p+1])
+      d++;
+    else{
+      it++;
+      C[it] = C[it-1]+d;
+      d = 0;
+    }
+  }
+  return C;
+}
 
 
 //----------------------------------------------------------------------------//
@@ -85,8 +135,8 @@ void IGA_1D::Derivative_2(double EV[], double K[], int p, double t)
     EV[0] = C[0]*D[1]*E[0];
     EV[1] = -(C[0]+C[1])*D[1]*E[0]+C[1]*D[2]*E[1];
     if (p >= 4){
-      for (int i = 2; i < p-2; i++)
-        EV[i] = C[i]*D[i]*E[i-2];
+      for (int i = 1; i < p-2; i++)
+        EV[i+1] = C[i]*D[i]*E[i-1]-(C[i]+C[i+1])*D[i+1]*E[i]+C[i+1]*D[i+2]*E[i+1];
     }
     EV[p-1] = C[p-2]*D[p-2]*E[p-3]-(C[p-2]+C[p-1])*D[p-1]*E[p-2];
     EV[p] = C[p-2]*D[p-1]*E[p-2];
@@ -94,14 +144,4 @@ void IGA_1D::Derivative_2(double EV[], double K[], int p, double t)
   double s = static_cast<double>(p*(p-1));
   for (int i = 0; i < p+1; i++)
     EV[i] = s*EV[i];
-}
-
-
-//----------------------------------------------------------------------------//
-// Script for initializing a zero vector.                                     //
-//----------------------------------------------------------------------------//
-void IGA_1D::ZeroVector(double V[], int length)
-{
-  for (int i = 0; i < length; i++)
-    V[i] = 0;
 }
