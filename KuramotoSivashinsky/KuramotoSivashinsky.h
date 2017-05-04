@@ -1,6 +1,8 @@
 // Derived class for all the functions and variables which will be used to solve
 // the Kuramoto-Sivashinsky equation with isogeometric analysis.
 
+#pragma once
+
 class KuramotoSivashinsky : public IGA_1D
 {
 public:
@@ -14,6 +16,10 @@ public:
   void Assembly(string Type, int p, int nx, double* KX, int* CX);
   void InitAss(int p, double K[], int s, double g[][2], double f[]);
   void Hilbert3(int p, double K[], int si, double gi[][2],int so, double go[][2], double** m);
+
+  void CalculateError(double U, int p, int k, int nx, double* KX, int* CX);
+  void ComputeLocalError(double CO[], double kx[], double g0[][2], double g1[][2],
+    double g2[][2], int p, double y0, double y1, double y2);
 
 private:
   string EquationType;
@@ -30,5 +36,6 @@ private:
 
   // Parameters for post-processing.
   bool Error, Visualize;
+  double Lebesgue,Sobolev_1,Sobolev_2;
   int nviz;
 };

@@ -7,6 +7,12 @@
 #include <string>
 using std::string;
 
+#include <iostream>
+#include <sstream>
+#include <fstream>
+using std::ofstream;
+using std::endl;
+
 #include "tinyxml.h"
 
 using namespace std;

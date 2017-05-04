@@ -27,6 +27,12 @@ public:
   void DynamicMatrix(double*** m, int row, int col);
   void DeleteMatrix(double** m, int n);
 
+  // Functions for the computing the approximation error.
+  double Lebesgue_L2(int p, double C[], double k[], double n, double w, double F);
+  double Sobolev_H1(int p, double C[], double k[], double n, double w, double F);
+  double Sobolev_H2(int p, double C[], double k[], double n, double w, double F);
+  double DotProduct(double a[], double b[], int s);
+
 protected:
   int polynomial;
   int continuity;

@@ -79,6 +79,12 @@ void KuramotoSivashinsky::Extract_XML(char* XMLFILE)
         int temp = atoi(EL4->FirstChild()->Value());
         Error = static_cast<bool>(temp);
       }
+      if (std::string(EL4->Value()) == "Lebesgue")
+        Lebesgue = atof(EL4->FirstChild()->Value());
+      if (std::string(EL4->Value()) == "Sobolev_1")
+        Sobolev_1 = atof(EL4->FirstChild()->Value());
+      if (std::string(EL4->Value()) == "Sobolev_2")
+        Sobolev_2 = atof(EL4->FirstChild()->Value());
       if (std::string(EL4->Value()) == "Visualize"){
         int temp = atoi(EL4->FirstChild()->Value());
         Visualize = static_cast<bool>(temp);
@@ -139,8 +145,10 @@ void KuramotoSivashinsky::Control_XML()
 
   // Test 5: Controlling the parameters for post-processing.
   int post = 0;
-  if (Error == 1)
-    post++;
+  if (Error == 1){
+    if ((Lebesgue > 0)&&(Sobolev_1 > 0)&&(Sobolev_2 > 0))
+      post++;
+  }
   if (Visualize == 1){
     if (nviz >= 2)
       post++;

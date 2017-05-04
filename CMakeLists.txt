@@ -18,6 +18,7 @@ set(IGA_1D  IGA_1D/1_Spline_Code.cpp
 set(KURA_SIVA KuramotoSivashinsky/1_XML_Parsing.cpp
               KuramotoSivashinsky/2_Global_Assembly.cpp
               KuramotoSivashinsky/3_Time_Integration.cpp
+              KuramotoSivashinsky/4_Simulation_Error.cpp 
               KuramotoSivashinsky/Main_File.cpp)
 
 set(EXPREVAL_SRCS expreval/except.cpp
