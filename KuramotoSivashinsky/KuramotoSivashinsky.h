@@ -22,10 +22,12 @@ public:
     double g2[][2], int p, double y0, double y1, double y2);
 
 private:
+  // Variables classifying the PDE.
   string EquationType;
   string BoundaryCondition;
-  double StartPoint, EndPoint;
   double alpha, beta, gamma;
+
+  // Parameters for the time-integration.
   double Time;
   int Order, TimeSteps;
 

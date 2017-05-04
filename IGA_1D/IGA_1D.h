@@ -21,6 +21,7 @@ public:
   void QuadratureTransform(double g[][2], double** G, int s, double a, double b);
 
   // Functions for the linear assembly.
+  void CompressedRowStorage(int p, int n, double** VP, int** CP, int** RP, double* KX, int* CX);
   void LinAss024(int TYPE, int p, double K[], int s, double g[][2], double** m);
   void LinAss13(int TYPE, int p, double K[], int s, double g[][2], double** m);
   void ZeroVector(double v[], int length);
@@ -34,9 +35,14 @@ public:
   double DotProduct(double a[], double b[], int s);
 
 protected:
-  int polynomial;
-  int continuity;
-  int elements;
+  // Variables for the B-spline discretization.
+  int polynomial, continuity, elements;
+  double StartPoint, EndPoint;
   double* KnotVector;
   int* ContinuityVector;
+
+  // Vectors for the Compressed Row Storage format.
+  double* ValuePointer;
+  int* ColumnPointer;
+  int* RowPointer;
 };

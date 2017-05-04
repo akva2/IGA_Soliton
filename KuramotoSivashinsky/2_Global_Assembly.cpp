@@ -10,8 +10,11 @@
 //----------------------------------------------------------------------------//
 void KuramotoSivashinsky::IsogeometricDiscretization()
 {
-  Assembly(EquationType,polynomial,elements,KnotVector,ContinuityVector);
+  CompressedRowStorage(polynomial,elements,&ValuePointer,&ColumnPointer,&RowPointer,
+    KnotVector,ContinuityVector);
+  // Assembly(EquationType,polynomial,elements,KnotVector,ContinuityVector);
 }
+
 
 //----------------------------------------------------------------------------//
 // Module for assembling the matrices and vectors.                            //
