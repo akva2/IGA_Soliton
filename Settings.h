@@ -14,6 +14,8 @@ using std::ofstream;
 using std::endl;
 
 #include "tinyxml.h"
+#include "petscvec.h"
+#include "petscmat.h"
 
 using namespace std;
 

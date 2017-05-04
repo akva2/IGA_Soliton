@@ -8,22 +8,15 @@
 // Initializing three vectors for declaring the matrices' sparsity pattern,   //
 // using the format Compressed Row Storage, in one spatial dimension.         //
 //----------------------------------------------------------------------------//
-void IGA_1D::CompressedRowStorage(int p, int n, double** VP, int** CP, int** RP,
-  double* KX, int* CX)
+void IGA_1D::CompressedRowStorage(int p, int n, int** RS, double* KX, int* CX)
 {
-  // Finding the number of nonzero elements and the matrix size.
-  int s = n*pow((p+1),2);
+  // Finding the matrix size.
   int ms = p+1;
   for (int i = 1; i < n; i++){
     int r = CX[i]-CX[i-1]+1;
-    s -= pow(p+1-r,2);
     ms += r;
   }
-
-  // Initializing the value-pointer vector.
-  *VP = new double[s];
-  for (int i = 0; i < s; i++)
-    (*VP)[i] = 0.0;
+  MatrixSize = ms;
 
   // Creating two auxiliary vectors for the elements' position.
   int COL[ms], ROW[ms];
@@ -43,21 +36,14 @@ void IGA_1D::CompressedRowStorage(int p, int n, double** VP, int** CP, int** RP,
   for (int i = ms-p-1; i < ms; i++)
     COL[i] = pc;
 
-  // Initializing the column-pointer vector.
-  *CP = new int[s];
-  it = -1;
+  // Initializing the row-size vector, and finding the maximal span number;
+  *RS = new int[ms];
+  SpanNumber = 0;
   for (int i = 0; i < ms; i++){
-    for (int j = ROW[i]; j <= COL[i]; j++){
-      it++;
-      (*CP)[it] = j;
-    }
-  }
-
-  // Initializing the row-pointer vector.
-  *RP = new int[s];
-  (*RP)[0] = 0;
-  for (int i = 1; i < ms; i++){
-    (*RP)[i] = (*RP)[i-1]+COL[i-1]-ROW[i-1]+1;
+    int g = COL[i]-ROW[i]+1;
+    (*RS)[i] = g;
+    if (SpanNumber < g)
+      SpanNumber = g;
   }
 }
 

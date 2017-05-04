@@ -10,8 +10,7 @@
 //----------------------------------------------------------------------------//
 void KuramotoSivashinsky::IsogeometricDiscretization()
 {
-  CompressedRowStorage(polynomial,elements,&ValuePointer,&ColumnPointer,&RowPointer,
-    KnotVector,ContinuityVector);
+  CompressedRowStorage(polynomial,elements,&RowSize,KnotVector,ContinuityVector);
   // Assembly(EquationType,polynomial,elements,KnotVector,ContinuityVector);
 }
 
@@ -21,6 +20,16 @@ void KuramotoSivashinsky::IsogeometricDiscretization()
 //----------------------------------------------------------------------------//
 void KuramotoSivashinsky::Assembly(string Type, int p, int nx, double* KX, int* CX)
 {
+  // Initializing the vector and relevant matrices in sparse PETSc-format.
+  VecCreateSeq(PETSC_COMM_SELF,MatrixSize,&U0);
+  MatCreateSeqAIJ(PETSC_COMM_SELF,MatrixSize,MatrixSize,SpanNumber,RowSize,&M0);
+  MatCreateSeqAIJ(PETSC_COMM_SELF,MatrixSize,MatrixSize,SpanNumber,RowSize,&K2);
+  MatCreateSeqAIJ(PETSC_COMM_SELF,MatrixSize,MatrixSize,SpanNumber,RowSize,&K4);
+  if (Type == "GKS")
+    MatCreateSeqAIJ(PETSC_COMM_SELF,MatrixSize,MatrixSize,SpanNumber,RowSize,&C3);
+  else if (Type == "NKS")
+    MatCreateSeqAIJ(PETSC_COMM_SELF,MatrixSize,MatrixSize,SpanNumber,RowSize,&H3);
+
   // Initializing the quadrature data.
   DynamicMatrix(&G0,p+1,2);
   DynamicMatrix(&G1,p,2);
@@ -37,8 +46,15 @@ void KuramotoSivashinsky::Assembly(string Type, int p, int nx, double* KX, int* 
     QuadratureData(GO,p+5);
   }
 
-
   // Starting the isogeometric assembly.
+  VecAssemblyBegin(U0);
+  MatAssemblyBegin(M0,MAT_FINAL_ASSEMBLY);
+  MatAssemblyBegin(K2,MAT_FINAL_ASSEMBLY);
+  MatAssemblyBegin(K4,MAT_FINAL_ASSEMBLY);
+  if (Type == "GKS")
+    MatAssemblyBegin(C3,MAT_FINAL_ASSEMBLY);
+  if (Type == "GKS")
+    MatAssemblyBegin(H3,MAT_FINAL_ASSEMBLY);
   for (int n = 0; n < nx; n++){
     // Extracting local knot vector in the x-direction.
     double kx[2*p+2];
@@ -87,11 +103,29 @@ void KuramotoSivashinsky::Assembly(string Type, int p, int nx, double* KX, int* 
     DeleteMatrix(M0E,p+1);
     DeleteMatrix(K2E,p+1);
     DeleteMatrix(K4E,p+1);
-    if (Type == "GKS")
+    if (Type == "GKS"){
       DeleteMatrix(C3E,p+1);
-    if (Type == "NKS")
+      delete[] H3E;
+    }
+    else if (Type == "NKS"){
       DeleteMatrix(H3E,p+1);
+      delete[] C3E;
+    }
+    else{
+      delete[] C3E;
+      delete[] H3E;
+    }
   }
+
+  // Completing the assembly.
+  VecAssemblyEnd(U0);
+  MatAssemblyEnd(M0,MAT_FINAL_ASSEMBLY);
+  MatAssemblyEnd(K2,MAT_FINAL_ASSEMBLY);
+  MatAssemblyEnd(K4,MAT_FINAL_ASSEMBLY);
+  if (Type == "GKS")
+    MatAssemblyEnd(C3,MAT_FINAL_ASSEMBLY);
+  else if (Type == "NKS")
+    MatAssemblyEnd(H3,MAT_FINAL_ASSEMBLY);
 }
 
 

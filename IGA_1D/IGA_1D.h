@@ -21,7 +21,7 @@ public:
   void QuadratureTransform(double g[][2], double** G, int s, double a, double b);
 
   // Functions for the linear assembly.
-  void CompressedRowStorage(int p, int n, double** VP, int** CP, int** RP, double* KX, int* CX);
+  void CompressedRowStorage(int p, int n, int** RS, double* KX, int* CX);
   void LinAss024(int TYPE, int p, double K[], int s, double g[][2], double** m);
   void LinAss13(int TYPE, int p, double K[], int s, double g[][2], double** m);
   void ZeroVector(double v[], int length);
@@ -42,7 +42,6 @@ protected:
   int* ContinuityVector;
 
   // Vectors for the Compressed Row Storage format.
-  double* ValuePointer;
-  int* ColumnPointer;
-  int* RowPointer;
+  int MatrixSize, SpanNumber;
+  int* RowSize;
 };

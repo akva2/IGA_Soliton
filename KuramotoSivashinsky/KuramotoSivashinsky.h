@@ -17,6 +17,7 @@ public:
   void InitAss(int p, double K[], int s, double g[][2], double f[]);
   void Hilbert3(int p, double K[], int si, double gi[][2],int so, double go[][2], double** m);
 
+  // Functions for computing the approximation error.
   void CalculateError(double U, int p, int k, int nx, double* KX, int* CX);
   void ComputeLocalError(double CO[], double kx[], double g0[][2], double g1[][2],
     double g2[][2], int p, double y0, double y1, double y2);
@@ -27,14 +28,19 @@ private:
   string BoundaryCondition;
   double alpha, beta, gamma;
 
-  // Parameters for the time-integration.
-  double Time;
-  int Order, TimeSteps;
+  // Global matrices in PETSc-format.
+  Vec U0;
+  Mat M0; Mat K2; Mat K4;
+  Mat C3; Mat H3;
 
   // Quadrature matrices.
   double** G0; double** G1; double** G2;
   double** GF; double** GC;
   double** GI; double** GO;
+
+  // Parameters for the time-integration.
+  double Time;
+  int Order, TimeSteps;
 
   // Parameters for post-processing.
   bool Error, Visualize;
