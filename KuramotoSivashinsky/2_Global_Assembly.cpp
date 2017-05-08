@@ -11,7 +11,7 @@
 void KuramotoSivashinsky::IsogeometricDiscretization()
 {
   CompressedRowStorage(polynomial,elements,&RowSize,KnotVector,ContinuityVector);
-  // Assembly(EquationType,polynomial,elements,KnotVector,ContinuityVector);
+  Assembly(EquationType,polynomial,elements,KnotVector,ContinuityVector);
 }
 
 
@@ -31,14 +31,14 @@ void KuramotoSivashinsky::Assembly(string Type, int p, int nx, double* KX, int* 
     MatCreateSeqAIJ(PETSC_COMM_SELF,MatrixSize,MatrixSize,SpanNumber,RowSize,&H3);
 
   // Initializing the quadrature data.
+  DynamicMatrix(&GF,p+4,2);
   DynamicMatrix(&G0,p+1,2);
   DynamicMatrix(&G1,p,2);
   DynamicMatrix(&G2,p-1,2);
-  DynamicMatrix(&GF,p+4,2);
+  QuadratureData(GF,p+4);
   QuadratureData(G0,p+1);
   QuadratureData(G1,p);
   QuadratureData(G2,p-1);
-  QuadratureData(GF,p+4);
   if (Type == "NKS"){
     DynamicMatrix(&GI,p+4,2);
     DynamicMatrix(&GO,p+5,2);
@@ -46,7 +46,7 @@ void KuramotoSivashinsky::Assembly(string Type, int p, int nx, double* KX, int* 
     QuadratureData(GO,p+5);
   }
 
-  // Starting the isogeometric assembly.
+  // Making the vector and matrices ready for assembly
   VecAssemblyBegin(U0);
   MatAssemblyBegin(M0,MAT_FINAL_ASSEMBLY);
   MatAssemblyBegin(K2,MAT_FINAL_ASSEMBLY);
@@ -55,6 +55,8 @@ void KuramotoSivashinsky::Assembly(string Type, int p, int nx, double* KX, int* 
     MatAssemblyBegin(C3,MAT_FINAL_ASSEMBLY);
   if (Type == "GKS")
     MatAssemblyBegin(H3,MAT_FINAL_ASSEMBLY);
+
+  // Starting the isogeometric assembly.
   for (int n = 0; n < nx; n++){
     // Extracting local knot vector in the x-direction.
     double kx[2*p+2];
@@ -64,22 +66,22 @@ void KuramotoSivashinsky::Assembly(string Type, int p, int nx, double* KX, int* 
     // Transforming the quadrature data in the x-direction.
     double ax = (kx[p+1]-kx[p])/2;
     double bx = (kx[p+1]+kx[p])/2;
-    double g0[p+1][2],g1[p][2],g2[p-1][2];
     double gf[p+1][2];
+    double g0[p+1][2],g1[p][2],g2[p-1][2];
     double gi[p+4][2],go[p+5][2];
+    QuadratureTransform(gf,GF,p+4,ax,bx);
     QuadratureTransform(g0,G0,p+1,ax,bx);
     QuadratureTransform(g1,G1,p,ax,bx);
     QuadratureTransform(g2,G2,p-1,ax,bx);
-    QuadratureTransform(gf,GF,p+4,ax,bx);
     if (Type == "NKS"){
       QuadratureTransform(gi,GI,p+4,ax,bx);
       QuadratureTransform(go,GO,p+5,ax,bx);
     }
 
     // Computing the element quantities.
+    double FE[p+1];
     double** M0E; double** K2E; double** K4E;
     double** C3E; double** H3E;
-    double FE[p+1];
     DynamicMatrix(&M0E,p+1,p+1);
     DynamicMatrix(&K2E,p+1,p+1);
     DynamicMatrix(&K4E,p+1,p+1);
@@ -87,37 +89,31 @@ void KuramotoSivashinsky::Assembly(string Type, int p, int nx, double* KX, int* 
     LinAss024(0,p,kx,p+1,g0,M0E);
     LinAss024(1,p,kx,p,g1,K2E);
     LinAss024(2,p,kx,p-1,g2,K4E);
-
     if (Type == "GKS"){
       DynamicMatrix(&C3E,p+1,p+1);
       LinAss13(3,p,kx,p-1,g2,C3E);
     }
     if (Type == "NKS"){
       DynamicMatrix(&H3E,p+1,p+1);
+      Hilbert3(p,kx,p+4,gi,p+5,go,H3E);
     }
 
     // Incrementing the element quantities into the global ones.
-
+    int IX[p+1];
+    ComputeElementIndex(IX,p,n+CX[n]);
+    // MatSetValues(M0,p+1,const int idxm[],p+1,const int idxn[],M0E,ADD_VALUES);
 
     // Deleting the element matrices.
     DeleteMatrix(M0E,p+1);
     DeleteMatrix(K2E,p+1);
     DeleteMatrix(K4E,p+1);
-    if (Type == "GKS"){
+    if (Type == "GKS")
       DeleteMatrix(C3E,p+1);
-      delete[] H3E;
-    }
-    else if (Type == "NKS"){
+    else if (Type == "NKS")
       DeleteMatrix(H3E,p+1);
-      delete[] C3E;
-    }
-    else{
-      delete[] C3E;
-      delete[] H3E;
-    }
   }
 
-  // Completing the assembly.
+  // Completing the vector and matrix assembly.
   VecAssemblyEnd(U0);
   MatAssemblyEnd(M0,MAT_FINAL_ASSEMBLY);
   MatAssemblyEnd(K2,MAT_FINAL_ASSEMBLY);

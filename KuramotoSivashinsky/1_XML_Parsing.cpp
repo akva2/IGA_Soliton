@@ -13,6 +13,7 @@ void KuramotoSivashinsky::InitializeClass(char* XMLFILE)
 {
   Extract_XML(XMLFILE);
   Control_XML();
+  InitializeConstantParameters();
   KnotVector = GenerateKnotVector(StartPoint,EndPoint,elements,polynomial,continuity);
   ContinuityVector = GenerateContinuityVector(KnotVector,elements,polynomial,continuity);
 }
@@ -163,4 +164,27 @@ void KuramotoSivashinsky::Control_XML()
   }
   else
     cout << "Valid XML-input" << endl;
+}
+
+
+void KuramotoSivashinsky::InitializeConstantParameters()
+{
+  double A[6][6] = {1.0,0.0,0.0,0.0,0.0,0.0,
+          2.0,-1.0,0.0,0.0,0.0,0.0,
+          3.0,-3.0,1.0,0.0,0.0,0.0,
+          4.0,-6.0,4.0,-1.0,0.0,0.0,
+          5.0,-10.0,10.0,-5.0,1.0,0.0,
+          6.0,-15.0,20.0,-15.0,6.0,-1.0};
+  double B[6][7] = {1.0,-1.0,0.0,0.0,0.0,0.0,0.0,
+          3.0/2,-2.0,1.0/2,0.0,0.0,0.0,0.0,
+          11.0/6,-3.0,3.0/2,-1.0/3,0.0,0.0,0.0,
+          25.0/12,-4.0,3.0,-4.0/3,1.0/4,0.0,0.0,
+          137.0/60,-5.0,5.0,-10.0/3,5.0/4,-1.0/5,0.0,
+          147.0/60,-6.0,15.0/2,-20.0/3,15.0/4,-6.0/5,1.0/6};
+  for (int i = 0; i < 6; i++){
+    for (int j = 0; j < 6; j++)
+      EXP[i][j] = A[i][j];
+    for (int j = 0; j < 7; j++)
+      BDF[i][j] = B[i][j];
+  }
 }

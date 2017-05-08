@@ -10,12 +10,16 @@ public:
   void InitializeClass(char* XMLFILE);
   void Extract_XML(char* XMLFILE);
   void Control_XML();
+  void InitializeConstantParameters();
 
   // Functions for the isogeometric assembly.
   void IsogeometricDiscretization();
   void Assembly(string Type, int p, int nx, double* KX, int* CX);
   void InitAss(int p, double K[], int s, double g[][2], double f[]);
   void Hilbert3(int p, double K[], int si, double gi[][2],int so, double go[][2], double** m);
+
+  // Functions for the time-integration.
+  void SBDF_integrator(int n, int p, int ms, int T, int nt, int order);
 
   // Functions for computing the approximation error.
   void CalculateError(double U, int p, int k, int nx, double* KX, int* CX);
@@ -41,6 +45,8 @@ private:
   // Parameters for the time-integration.
   double Time;
   int Order, TimeSteps;
+  double EXP[6][6], BDF[6][7];
+  double** Ut;
 
   // Parameters for post-processing.
   bool Error, Visualize;

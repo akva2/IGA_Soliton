@@ -140,3 +140,13 @@ void IGA_1D::DeleteMatrix(double** m, int n)
     delete[] m[i];
   delete[] m;
 }
+
+
+//----------------------------------------------------------------------------//
+// Script for finding the global indices of an element.                       //
+//----------------------------------------------------------------------------//
+void IGA_1D::ComputeElementIndex(int IX[], int p, int s)
+{
+  for (int i = 0; i <= p; i++)
+    IX[i] = s+i;
+}

@@ -27,6 +27,7 @@ public:
   void ZeroVector(double v[], int length);
   void DynamicMatrix(double*** m, int row, int col);
   void DeleteMatrix(double** m, int n);
+  void ComputeElementIndex(int IX[], int p, int s);
 
   // Functions for the computing the approximation error.
   double Lebesgue_L2(int p, double C[], double k[], double n, double w, double F);
