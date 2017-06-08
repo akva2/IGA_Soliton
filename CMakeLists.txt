@@ -18,7 +18,7 @@ set(IGA_1D  IGA_1D/1_Spline_Code.cpp
 set(KURA_SIVA KuramotoSivashinsky/1_XML_Parsing.cpp
               KuramotoSivashinsky/2_Global_Assembly.cpp
               KuramotoSivashinsky/3_Time_Integration.cpp
-              KuramotoSivashinsky/4_Simulation_Error.cpp 
+              KuramotoSivashinsky/4_Simulation_Error.cpp
               KuramotoSivashinsky/Main_File.cpp)
 
 set(EXPREVAL_SRCS expreval/except.cpp
@@ -29,6 +29,7 @@ set(EXPREVAL_SRCS expreval/except.cpp
                   expreval/parser.cpp
                   expreval/vallist.cpp)
 add_library(expreval ${EXPREVAL_SRCS})
+include_directories(${PROJECT_SOURCE_DIR}/expreval)
 
 add_executable(KuramotoSivashinsky ${IGA_1D} ${KURA_SIVA})
 target_link_libraries(KuramotoSivashinsky expreval ${TINYXML_LIBRARIES} ${PETSC_LIBRARIES})

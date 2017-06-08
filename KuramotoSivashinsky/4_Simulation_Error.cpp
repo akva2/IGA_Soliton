@@ -85,3 +85,19 @@ void KuramotoSivashinsky::ComputeLocalError(double CO[], double kx[], double g0[
     }
   }
 }
+
+
+
+double KuramotoSivashinsky::InitialCondition(double x, double t)
+{
+  double result = 0.0;
+  try {
+    *arg[0] = x;
+    *arg[1] = t;
+    result = expr->Evaluate();
+  }
+  catch (ExprEval::Exception e){
+    cerr << " Exception during function evaluation. \n";
+  }
+  return result;
+}

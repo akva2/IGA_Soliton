@@ -12,7 +12,7 @@ int main(int argc, char* argv[])
   char* XMLFILE = argv[1];
 
   KuramotoSivashinsky KS;
-  
+
   PetscInitialize(&argc,&argv,(char*)0,"help");
   KS.InitializeClass(XMLFILE);
   KS.IsogeometricDiscretization();

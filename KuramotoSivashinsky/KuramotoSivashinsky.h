@@ -5,6 +5,10 @@
 
 class KuramotoSivashinsky : public IGA_1D
 {
+  ExprEval::Expression* expr;
+  ExprEval::FunctionList* f;
+  ExprEval::ValueList* v;
+  std::vector<double*> arg;
 public:
   // Functions for handling the XML-file.
   void InitializeClass(char* XMLFILE);
@@ -52,4 +56,6 @@ private:
   bool Error, Visualize;
   double Lebesgue,Sobolev_1,Sobolev_2;
   int nviz;
+
+  double InitialCondition(double x, double t);
 };

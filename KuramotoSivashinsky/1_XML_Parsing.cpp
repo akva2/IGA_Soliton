@@ -16,6 +16,7 @@ void KuramotoSivashinsky::InitializeClass(char* XMLFILE)
   InitializeConstantParameters();
   KnotVector = GenerateKnotVector(StartPoint,EndPoint,elements,polynomial,continuity);
   ContinuityVector = GenerateContinuityVector(KnotVector,elements,polynomial,continuity);
+  cout << InitialCondition(1,2) << std::endl;
 }
 
 
@@ -70,6 +71,21 @@ void KuramotoSivashinsky::Extract_XML(char* XMLFILE)
         Order = atoi(EL3->FirstChild()->Value());
       if (std::string(EL3->Value()) == "TimeSteps")
         TimeSteps = atoi(EL3->FirstChild()->Value());
+      if (std::string(EL3->Value()) == "InitialCondition")
+      {
+        expr = new ExprEval::Expression;
+        f = new ExprEval::FunctionList;
+        v = new ExprEval::ValueList;
+        f->AddDefaultFunctions();
+        v->AddDefaultValues();
+        v->Add("x",0,false);
+        v->Add("t",0,false);
+        expr->SetFunctionList(f);
+        expr->SetValueList(v);
+        expr->Parse(EL3->FirstChild()->Value());
+        arg.push_back(v->GetAddress("x"));
+        arg.push_back(v->GetAddress("t"));
+      }
       EL3 = EL3->NextSiblingElement();
     }
 

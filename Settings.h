@@ -1,6 +1,7 @@
 // Including the standard C++ libraries.
 #include <iostream>
 #include <cmath>
+#include <vector>
 
 #include <cstring>
 #include <cctype>
@@ -14,6 +15,7 @@ using std::ofstream;
 using std::endl;
 
 #include "tinyxml.h"
+#include "expreval.h"
 #include "petscvec.h"
 #include "petscmat.h"
 
